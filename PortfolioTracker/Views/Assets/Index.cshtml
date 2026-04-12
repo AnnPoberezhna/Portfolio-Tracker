@@ -1,0 +1,75 @@
+@model IEnumerable<PortfolioTracker.Models.Asset>
+
+@{
+    ViewData["Title"] = "My Assets";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>@ViewData["Title"]</h1>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Create" class="btn btn-success">
+                <i class="bi bi-plus-lg"></i> Add Asset
+            </a>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <form method="get" class="input-group">
+                    <input type="text" class="form-control" placeholder="Search by symbol..." name="searchSymbol">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">Clear</a>
+                </form>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Symbol</th>
+                        <th>Quantity</th>
+                        <th>Purchase Price</th>
+                        <th>Total Value</th>
+                        <th>Purchase Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var totalValue = item.Quantity * item.PurchasePrice;
+                        <tr>
+                            <td>@item.Name</td>
+                            <td><span class="badge bg-info">@item.Symbol</span></td>
+                            <td>@item.Quantity.ToString("F4")</td>
+                            <td>$@item.PurchasePrice.ToString("F2")</td>
+                            <td><strong>$@totalValue.ToString("F2")</strong></td>
+                            <td>@item.PurchaseDate.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            No assets found. <a asp-action="Create" class="alert-link">Add your first asset</a>.
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+}
