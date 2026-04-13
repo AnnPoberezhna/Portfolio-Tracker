@@ -24,14 +24,20 @@
 
                         <div class="mb-3">
                             <label asp-for="Password" class="form-label">Password</label>
-                            <input asp-for="Password" class="form-control" type="password" />
+                            <div class="input-group">
+                                <input asp-for="Password" class="form-control" type="password" id="RegisterPassword" />
+                                <button type="button" class="btn btn-outline-secondary" id="toggleRegisterPassword">Show</button>
+                            </div>
                             <small class="form-text text-muted">Minimum 6 characters</small>
                             <span asp-validation-for="Password" class="invalid-feedback"></span>
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
-                            <input asp-for="ConfirmPassword" class="form-control" type="password" />
+                            <div class="input-group">
+                                <input asp-for="ConfirmPassword" class="form-control" type="password" id="ConfirmPassword" />
+                                <button type="button" class="btn btn-outline-secondary" id="toggleConfirmPassword">Show</button>
+                            </div>
                             <span asp-validation-for="ConfirmPassword" class="invalid-feedback"></span>
                         </div>
 
@@ -54,4 +60,21 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        function togglePasswordField(inputId, buttonId) {
+            const input = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
+            if (!input || !button) return;
+            const type = input.type === 'password' ? 'text' : 'password';
+            input.type = type;
+            button.textContent = type === 'password' ? 'Show' : 'Hide';
+        }
+
+        document.getElementById('toggleRegisterPassword')?.addEventListener('click', function () {
+            togglePasswordField('RegisterPassword', 'toggleRegisterPassword');
+        });
+        document.getElementById('toggleConfirmPassword')?.addEventListener('click', function () {
+            togglePasswordField('ConfirmPassword', 'toggleConfirmPassword');
+        });
+    </script>
 }

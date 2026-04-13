@@ -24,7 +24,10 @@
 
                         <div class="mb-3">
                             <label asp-for="Password" class="form-label">Password</label>
-                            <input asp-for="Password" class="form-control" type="password" />
+                            <div class="input-group">
+                                <input asp-for="Password" class="form-control" type="password" id="Password" />
+                                <button type="button" class="btn btn-outline-secondary" id="togglePassword">Show</button>
+                            </div>
                             <span asp-validation-for="Password" class="invalid-feedback"></span>
                         </div>
 
@@ -52,4 +55,15 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        const passwordToggle = document.getElementById('togglePassword');
+        if (passwordToggle) {
+            passwordToggle.addEventListener('click', function () {
+                const passwordInput = document.getElementById('Password');
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+                this.textContent = type === 'password' ? 'Show' : 'Hide';
+            });
+        }
+    </script>
 }
