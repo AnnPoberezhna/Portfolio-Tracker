@@ -29,6 +29,7 @@
             </dl>
 
             <form asp-action="Delete" method="post" onsubmit="return confirm('Are you sure?');">
+                @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="Id" />
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-danger">Delete</button>

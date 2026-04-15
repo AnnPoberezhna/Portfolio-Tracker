@@ -10,6 +10,10 @@ namespace PortfolioTracker.Models
         [Key]
         public int Id { get; set; }
 
+        // User ID for ownership
+        [Required]
+        public string UserId { get; set; }
+
         // Ticker symbol, for example "AAPL" or "BTC"(can be used for fetching data from the API)
         [Required(ErrorMessage = "Please select a cryptocurrency.")]
         [MaxLength(10)]

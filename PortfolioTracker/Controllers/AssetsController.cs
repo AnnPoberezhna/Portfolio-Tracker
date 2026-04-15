@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PortfolioTracker.Data;
@@ -12,17 +13,20 @@ namespace PortfolioTracker.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly CryptoService _cryptoService;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public AssetsController(ApplicationDbContext context, CryptoService cryptoService)
+        public AssetsController(ApplicationDbContext context, CryptoService cryptoService, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _cryptoService = cryptoService;
+            _userManager = userManager;
         }
 
         // GET: Assets - List all assets with optional filtering
         public async Task<IActionResult> Index(string? searchSymbol)
         {
-            var assets = _context.Assets.AsQueryable();
+            var userId = _userManager.GetUserId(User);
+            var assets = _context.Assets.Where(a => a.UserId == userId).AsQueryable();
 
             // Filter by symbol if provided
             if (!string.IsNullOrEmpty(searchSymbol))
@@ -70,6 +74,13 @@ namespace PortfolioTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Symbol,Quantity,PurchaseDate")] Asset asset)
         {
+            var userId = _userManager.GetUserId(User);
+            asset.UserId = userId;
+
+            // Re-validate the model after setting UserId
+            ModelState.Clear();
+            TryValidateModel(asset);
+
             if (ModelState.IsValid)
             {
                 // Get current price and calculate value
@@ -104,7 +115,8 @@ namespace PortfolioTracker.Controllers
                 return NotFound();
             }
 
-            var asset = await _context.Assets.FindAsync(id);
+            var userId = _userManager.GetUserId(User);
+            var asset = await _context.Assets.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
             if (asset == null)
             {
                 return NotFound();
@@ -124,6 +136,15 @@ namespace PortfolioTracker.Controllers
             {
                 return NotFound();
             }
+
+            var userId = _userManager.GetUserId(User);
+            var existingAsset = await _context.Assets.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
+            if (existingAsset == null)
+            {
+                return NotFound();
+            }
+
+            asset.UserId = userId;
 
             if (ModelState.IsValid)
             {
@@ -173,8 +194,9 @@ namespace PortfolioTracker.Controllers
                 return NotFound();
             }
 
+            var userId = _userManager.GetUserId(User);
             var asset = await _context.Assets
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
             if (asset == null)
             {
                 return NotFound();
@@ -188,7 +210,8 @@ namespace PortfolioTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var asset = await _context.Assets.FindAsync(id);
+            var userId = _userManager.GetUserId(User);
+            var asset = await _context.Assets.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
             if (asset != null)
             {
                 _context.Assets.Remove(asset);
