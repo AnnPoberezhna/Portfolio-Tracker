@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PortfolioTracker.Data;
 using PortfolioTracker.Models;
+using PortfolioTracker.Services;
 
 namespace PortfolioTracker.Controllers
 {
@@ -10,10 +11,12 @@ namespace PortfolioTracker.Controllers
     public class AssetsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly CryptoService _cryptoService;
 
-        public AssetsController(ApplicationDbContext context)
+        public AssetsController(ApplicationDbContext context, CryptoService cryptoService)
         {
             _context = context;
+            _cryptoService = cryptoService;
         }
 
         // GET: Assets - List all assets with optional filtering
@@ -27,26 +30,69 @@ namespace PortfolioTracker.Controllers
                 assets = assets.Where(a => a.Symbol.Contains(searchSymbol.ToUpper()));
             }
 
-            return View(await assets.OrderByDescending(a => a.PurchaseDate).ToListAsync());
+            var assetList = await assets.OrderByDescending(a => a.PurchaseDate).ToListAsync();
+
+            // Get current prices and build ViewModels
+            var cryptos = await _cryptoService.GetTop50CryptocurrenciesAsync();
+            var viewModels = new List<AssetViewModel>();
+
+            foreach (var asset in assetList)
+            {
+                var crypto = cryptos.FirstOrDefault(c => c.Symbol.Equals(asset.Symbol, StringComparison.OrdinalIgnoreCase));
+                var currentPrice = crypto?.CurrentPrice ?? 0;
+                var previousPrice = _cryptoService.GetPriceChange(asset.Symbol);
+
+                viewModels.Add(new AssetViewModel
+                {
+                    Id = asset.Id,
+                    Symbol = asset.Symbol,
+                    Quantity = asset.Quantity,
+                    CurrentValue = currentPrice * asset.Quantity,
+                    PurchaseDate = asset.PurchaseDate,
+                    CurrentPrice = currentPrice,
+                    PreviousPrice = previousPrice
+                });
+            }
+
+            return View(viewModels);
         }
 
         // GET: Assets/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var cryptos = await _cryptoService.GetTop50CryptocurrenciesAsync();
+            ViewBag.Cryptocurrencies = cryptos.Select(c => new { Value = c.Symbol.ToUpper(), Text = $"{c.Name} ({c.Symbol.ToUpper()})" }).ToList();
             return View();
         }
 
         // POST: Assets/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Symbol,Quantity,PurchasePrice,PurchaseDate")] Asset asset)
+        public async Task<IActionResult> Create([Bind("Symbol,Quantity,PurchaseDate")] Asset asset)
         {
             if (ModelState.IsValid)
             {
+                // Get current price and calculate value
+                var currentPrice = await _cryptoService.GetCurrentPriceAsync(asset.Symbol);
+                if (currentPrice.HasValue && currentPrice.Value > 0)
+                {
+                    asset.CurrentValue = currentPrice.Value * asset.Quantity;
+                }
+                else
+                {
+                    ModelState.AddModelError("Symbol", $"Unable to fetch current price for {asset.Symbol}. Please try again.");
+                    var cryptos = await _cryptoService.GetTop50CryptocurrenciesAsync();
+                    ViewBag.Cryptocurrencies = cryptos.Select(c => new { Value = c.Symbol.ToUpper(), Text = $"{c.Name} ({c.Symbol.ToUpper()})" }).ToList();
+                    return View(asset);
+                }
+
                 _context.Add(asset);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            var cryptos2 = await _cryptoService.GetTop50CryptocurrenciesAsync();
+            ViewBag.Cryptocurrencies = cryptos2.Select(c => new { Value = c.Symbol.ToUpper(), Text = $"{c.Name} ({c.Symbol.ToUpper()})" }).ToList();
             return View(asset);
         }
 
@@ -63,13 +109,16 @@ namespace PortfolioTracker.Controllers
             {
                 return NotFound();
             }
+
+            var cryptos = await _cryptoService.GetTop50CryptocurrenciesAsync();
+            ViewBag.Cryptocurrencies = cryptos.Select(c => new { Value = c.Symbol.ToUpper(), Text = $"{c.Name} ({c.Symbol.ToUpper()})" }).ToList();
             return View(asset);
         }
 
         // POST: Assets/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Symbol,Quantity,PurchasePrice,PurchaseDate")] Asset asset)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Symbol,Quantity,PurchaseDate")] Asset asset)
         {
             if (id != asset.Id)
             {
@@ -80,6 +129,20 @@ namespace PortfolioTracker.Controllers
             {
                 try
                 {
+                    // Get current price and calculate value
+                    var currentPrice = await _cryptoService.GetCurrentPriceAsync(asset.Symbol);
+                    if (currentPrice.HasValue)
+                    {
+                        asset.CurrentValue = currentPrice.Value * asset.Quantity;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Symbol", "Unable to fetch current price for this cryptocurrency.");
+                        var cryptos = await _cryptoService.GetTop50CryptocurrenciesAsync();
+                        ViewBag.Cryptocurrencies = cryptos.Select(c => new { Value = c.Symbol.ToUpper(), Text = $"{c.Name} ({c.Symbol.ToUpper()})" }).ToList();
+                        return View(asset);
+                    }
+
                     _context.Update(asset);
                     await _context.SaveChangesAsync();
                 }
@@ -96,6 +159,9 @@ namespace PortfolioTracker.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            var cryptos2 = await _cryptoService.GetTop50CryptocurrenciesAsync();
+            ViewBag.Cryptocurrencies = cryptos2.Select(c => new { Value = c.Symbol.ToUpper(), Text = $"{c.Name} ({c.Symbol.ToUpper()})" }).ToList();
             return View(asset);
         }
 

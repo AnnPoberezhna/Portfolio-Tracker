@@ -16,32 +16,21 @@
                 <input asp-for="Id" type="hidden" />
 
                 <div class="mb-3">
-                    <label asp-for="Name" class="form-label"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="invalid-feedback"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Symbol" class="form-label"></label>
-                    <input asp-for="Symbol" class="form-control text-uppercase" />
+                    <label asp-for="Symbol" class="form-label">Cryptocurrency</label>
+                    <input asp-for="Symbol" class="form-control" list="cryptos" placeholder="Start typing to search..." />
+                    <datalist id="cryptos">
+                        @foreach (var crypto in ViewBag.Cryptocurrencies ?? new List<dynamic>())
+                        {
+                            <option value="@crypto.Value">@crypto.Text</option>
+                        }
+                    </datalist>
                     <span asp-validation-for="Symbol" class="invalid-feedback"></span>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label asp-for="Quantity" class="form-label"></label>
-                            <input asp-for="Quantity" class="form-control" step="0.0001" type="number" />
-                            <span asp-validation-for="Quantity" class="invalid-feedback"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label asp-for="PurchasePrice" class="form-label"></label>
-                            <input asp-for="PurchasePrice" class="form-control" step="0.01" type="number" />
-                            <span asp-validation-for="PurchasePrice" class="invalid-feedback"></span>
-                        </div>
-                    </div>
+                <div class="mb-3">
+                    <label asp-for="Quantity" class="form-label"></label>
+                    <input asp-for="Quantity" class="form-control" step="0.0001" type="number" />
+                    <span asp-validation-for="Quantity" class="invalid-feedback"></span>
                 </div>
 
                 <div class="mb-3">

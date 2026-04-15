@@ -8,27 +8,21 @@ namespace PortfolioTracker.Models
     {
         // Primary key for the database
         [Key]
-        public int Id {get; set; }
-
-        // Asset name, for example "Apple"
-        [Required(ErrorMessage = "Please provide the asset name.")]
-        [MaxLength(50)]
-        public string Name { get; set; } 
+        public int Id { get; set; }
 
         // Ticker symbol, for example "AAPL" or "BTC"(can be used for fetching data from the API)
-        [Required(ErrorMessage = "Please provide the symbol.")]
+        [Required(ErrorMessage = "Please select a cryptocurrency.")]
         [MaxLength(10)]
         public string Symbol { get; set; } 
 
         // Quantity of shares/crypto owned
         [Required]
         [Range(0.0001, 1000000, ErrorMessage = "Quantity must be greater than zero.")]
-        public decimal Quantity { get; set; } 
+        public decimal Quantity { get; set; }
 
-        // Price paid per single unit
+        // Calculated current value (price * quantity)
         [Required]
-        [Range(0.01, 100000000, ErrorMessage = "Purchase price must be greater than zero.")]
-        public decimal PurchasePrice { get; set; } 
+        public decimal CurrentValue { get; set; } 
 
         // Purchase date (defaults to the moment the entry is added)
         [Required(ErrorMessage = "Please provide the purchase date.")]
