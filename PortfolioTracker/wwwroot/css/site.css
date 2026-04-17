@@ -29,3 +29,137 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-mode .navbar {
+  background-color: #1f1f1f !important;
+  border-bottom: 1px solid #333;
+}
+
+body.dark-mode .navbar-brand,
+body.dark-mode .nav-link,
+body.dark-mode .text-dark {
+  color: #ffffff !important;
+}
+
+body.dark-mode .btn-outline-danger {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+body.dark-mode .btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+body.dark-mode .btn-outline-primary {
+  border-color: #0d6efd;
+  color: #0d6efd;
+}
+
+body.dark-mode .btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+body.dark-mode .btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+body.dark-mode .card {
+  background-color: #1f1f1f;
+  border-color: #333;
+  color: #ffffff;
+}
+
+body.dark-mode .table {
+  color: #ffffff;
+}
+
+body.dark-mode .table thead th {
+  border-bottom-color: #333;
+}
+
+body.dark-mode .table tbody tr {
+  border-bottom-color: #333;
+}
+
+body.dark-mode .form-control {
+  background-color: #2a2a2a;
+  border-color: #555;
+  color: #ffffff;
+}
+
+body.dark-mode .form-control:focus {
+  background-color: #2a2a2a;
+  border-color: #777;
+  color: #ffffff;
+}
+
+body.dark-mode .footer {
+  border-top: 1px solid #333;
+  background-color: #1f1f1f;
+  color: #ffffff !important;
+}
+
+body.dark-mode .footer a {
+  color: #0d6efd;
+}
+
+body.dark-mode .dropdown-menu {
+  background-color: #1f1f1f;
+  border-color: #333;
+}
+
+body.dark-mode .dropdown-item {
+  color: #ffffff;
+}
+
+body.dark-mode .dropdown-item:hover {
+  background-color: #333;
+}
+
+/* Dark mode form controls in dropdown */
+body.dark-mode .form-check-label {
+  color: #ffffff;
+}
+
+/* Assets Table Styling */
+.table-responsive {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .table-responsive {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table thead th {
+  border-top: none;
+  font-weight: 600;
+}
+
+.table tbody tr:first-child td {
+  border-top: none;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Remove extra space under assets table */
+.table-responsive {
+  margin-bottom: 0 !important;
+}
