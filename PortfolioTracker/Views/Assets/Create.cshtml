@@ -34,7 +34,7 @@
 
                 <div class="mb-3">
                     <label asp-for="PurchaseDate" class="form-label"></label>
-                    <input asp-for="PurchaseDate" class="form-control" type="datetime-local" min="1900-01-01T00:00" max="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                    <input asp-for="PurchaseDate" class="form-control" type="datetime-local" min="2008-10-31T00:00" max="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
                     <span asp-validation-for="PurchaseDate" class="invalid-feedback"></span>
                 </div>
 

@@ -78,16 +78,77 @@ body.dark-mode .card {
   color: #ffffff;
 }
 
+body.dark-mode .card-header {
+  background-color: #2a2a2a;
+  border-bottom-color: #333;
+}
+
+/* Dashboard Cards */
+.card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.dark-mode .card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Chart containers */
+.chart-container {
+  position: relative;
+  height: 300px;
+}
+
 body.dark-mode .table {
   color: #ffffff;
+  background-color: transparent !important;
+  border-color: #333 !important;
 }
 
 body.dark-mode .table thead th {
   border-bottom-color: #333;
+  background-color: #2a2a2a !important;
+  color: #ffffff;
 }
 
 body.dark-mode .table tbody tr {
   border-bottom-color: #333;
+  background-color: #1f1f1f !important;
+}
+
+body.dark-mode .table tbody tr:hover {
+  background-color: #2a2a2a !important;
+}
+
+body.dark-mode .table td,
+body.dark-mode .table th {
+  background-color: transparent !important;
+  color: #ffffff;
+}
+
+body.dark-mode .table tbody td {
+  border-top-color: #333;
+}
+
+body.dark-mode .table-responsive {
+  background-color: transparent !important;
+}
+
+/* Dark mode text colors for table content */
+body.dark-mode .text-success {
+  color: #28a745 !important; /* Keep green for positive changes */
+}
+
+body.dark-mode .text-danger {
+  color: #dc3545 !important; /* Keep red for negative changes */
+}
+
+body.dark-mode .text-muted {
+  color: #cccccc !important;
 }
 
 body.dark-mode .form-control {

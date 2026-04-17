@@ -116,6 +116,31 @@ namespace PortfolioTracker.Services
                 return null;
             }
         }
+
+        public async Task<Dictionary<string, decimal>> GetCryptoPrices(List<string> symbols)
+        {
+            var prices = new Dictionary<string, decimal>();
+            
+            try
+            {
+                var cryptos = await GetTop50CryptocurrenciesAsync();
+                
+                foreach (var symbol in symbols)
+                {
+                    var crypto = cryptos.FirstOrDefault(c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase));
+                    if (crypto != null)
+                    {
+                        prices[symbol] = crypto.CurrentPrice;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting crypto prices");
+            }
+            
+            return prices;
+        }
     }
 
     public class CryptoCurrency
