@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using PortfolioTracker.Data;
+using PortfolioTracker.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace PortfolioTracker.Controllers
@@ -10,15 +14,18 @@ namespace PortfolioTracker.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _context;
 
         public AccountController(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _context = context;
         }
 
         // GET: Account/Register
@@ -43,6 +50,9 @@ namespace PortfolioTracker.Controllers
                 {
                     // Assign Standard User role by default
                     await _userManager.AddToRoleAsync(user, "Standard User");
+
+                    await UpsertUserActivityAsync(user.Id, setRegisteredIfMissing: true);
+
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -79,7 +89,17 @@ namespace PortfolioTracker.Controllers
 
                 if (result.Succeeded)
                 {
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    if (user != null)
+                    {
+                        await UpsertUserActivityAsync(user.Id, setRegisteredIfMissing: true);
+                    }
+
                     return RedirectToLocal(returnUrl);
+                }
+                else if (result.IsLockedOut)
+                {
+                    ModelState.AddModelError(string.Empty, "Your account is blocked. Contact an administrator.");
                 }
                 else
                 {
@@ -108,6 +128,38 @@ namespace PortfolioTracker.Controllers
             else
             {
                 return RedirectToAction("Index", "Home");
+            }
+        }
+
+        private async Task UpsertUserActivityAsync(string userId, bool setRegisteredIfMissing)
+        {
+            try
+            {
+                var activity = await _context.UserActivities.FirstOrDefaultAsync(x => x.UserId == userId);
+                if (activity == null)
+                {
+                    _context.UserActivities.Add(new UserActivity
+                    {
+                        UserId = userId,
+                        RegisteredAtUtc = DateTime.UtcNow,
+                        LastSeenUtc = DateTime.UtcNow
+                    });
+                }
+                else
+                {
+                    if (setRegisteredIfMissing && activity.RegisteredAtUtc == default)
+                    {
+                        activity.RegisteredAtUtc = DateTime.UtcNow;
+                    }
+
+                    activity.LastSeenUtc = DateTime.UtcNow;
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch (SqliteException ex) when (ex.Message.Contains("no such table: UserActivities", StringComparison.OrdinalIgnoreCase))
+            {
+                // Database was not migrated yet. Ignore and keep auth flow working.
             }
         }
     }
