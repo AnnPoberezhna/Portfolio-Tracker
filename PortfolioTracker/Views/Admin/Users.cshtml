@@ -1,0 +1,71 @@
+@model IEnumerable<PortfolioTracker.Models.UserManagementViewModel>
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h2 class="mb-3">User Management</h2>
+
+@if (TempData["AdminStatusMessage"] is string statusMessage)
+{
+    <div class="alert alert-info" role="alert">
+        @statusMessage
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Roles</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                var isAdmin = user.Roles.Contains("Admin");
+
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.UserName</td>
+                    <td>
+                        @if (user.Roles.Any())
+                        {
+                            @string.Join(", ", user.Roles)
+                        }
+                        else
+                        {
+                            <span class="text-muted">No roles</span>
+                        }
+                    </td>
+                    <td class="text-end">
+                        <div class="d-flex justify-content-end gap-2">
+                            @if (!isAdmin)
+                            {
+                                <form asp-action="PromoteToAdmin" method="post">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Make Admin</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="DemoteFromAdmin" method="post">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-warning" @(user.IsCurrentUser ? "disabled" : null)>Remove Admin</button>
+                                </form>
+                            }
+
+                            <form asp-action="DeleteUser" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger" @(user.IsCurrentUser ? "disabled" : null)>Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
