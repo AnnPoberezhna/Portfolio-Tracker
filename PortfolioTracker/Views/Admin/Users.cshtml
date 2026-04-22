@@ -1,10 +1,37 @@
-@model IEnumerable<PortfolioTracker.Models.UserManagementViewModel>
+@model PortfolioTracker.Models.AdminUsersPageViewModel
 
 @{
     ViewData["Title"] = "User Management";
 }
 
 <h2 class="mb-3">User Management</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Total users</div>
+                <div class="display-6">@Model.TotalUsers</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">New registrations today</div>
+                <div class="display-6">@Model.NewUsersToday</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Active today</div>
+                <div class="display-6">@Model.ActiveUsersToday</div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @if (TempData["AdminStatusMessage"] is string statusMessage)
 {
@@ -20,11 +47,14 @@
                 <th>Email</th>
                 <th>Username</th>
                 <th>Roles</th>
+                <th>Registered (UTC)</th>
+                <th>Last Active (UTC)</th>
+                <th>Status</th>
                 <th class="text-end">Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in Model)
+            @foreach (var user in Model.Users)
             {
                 var isAdmin = user.Roles.Contains("Admin");
 
@@ -41,8 +71,45 @@
                             <span class="text-muted">No roles</span>
                         }
                     </td>
+                    <td>@(user.RegisteredAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                    <td>@(user.LastSeenUtc?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                    <td>
+                        @if (user.IsLockedOut)
+                        {
+                            <span class="badge text-bg-danger">Blocked</span>
+                        }
+                        else
+                        {
+                            <span class="badge text-bg-success">Active</span>
+                        }
+                    </td>
                     <td class="text-end">
                         <div class="d-flex justify-content-end gap-2">
+                            @if (!user.IsLockedOut)
+                            {
+                                <form asp-action="LockUser" method="post">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <input type="hidden" name="days" value="1" />
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary" @(user.IsCurrentUser ? "disabled" : null)>Block 1d</button>
+                                </form>
+                                <form asp-action="LockUser" method="post">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <input type="hidden" name="days" value="7" />
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary" @(user.IsCurrentUser ? "disabled" : null)>Block 7d</button>
+                                </form>
+                                <form asp-action="LockUserPermanently" method="post" onsubmit="return confirm('Permanently block this account?');">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-dark" @(user.IsCurrentUser ? "disabled" : null)>Block Forever</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="UnlockUser" method="post">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-primary">Unblock</button>
+                                </form>
+                            }
+
                             @if (!isAdmin)
                             {
                                 <form asp-action="PromoteToAdmin" method="post">

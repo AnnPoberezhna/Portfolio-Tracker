@@ -13,6 +13,7 @@ namespace PortfolioTracker.Data
         {
         }
         public DbSet<Asset> Assets { get; set; }
+        public DbSet<UserActivity> UserActivities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -23,6 +24,12 @@ namespace PortfolioTracker.Data
                 .HasOne<IdentityUser>()
                 .WithMany()
                 .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserActivity>()
+                .HasOne(ua => ua.User)
+                .WithOne()
+                .HasForeignKey<UserActivity>(ua => ua.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
