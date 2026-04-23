@@ -186,6 +186,67 @@ body.dark-mode .dropdown-item:hover {
   background-color: #333;
 }
 
+/* Large confirmation modal for admin actions */
+.confirm-modal-dialog {
+  max-width: 52vw;
+}
+
+.confirm-modal-content {
+  min-height: 42vh;
+  border-radius: 18px;
+}
+
+.confirm-modal-message {
+  font-size: 1.35rem;
+  line-height: 1.6;
+}
+
+body.dark-mode .confirm-modal-content {
+  background-color: #1f1f1f;
+  border: 1px solid #333;
+  color: #ffffff;
+}
+
+body.dark-mode .confirm-modal-content .modal-header,
+body.dark-mode .confirm-modal-content .modal-footer {
+  border-color: #333;
+}
+
+body.dark-mode .confirm-modal-content .modal-title,
+body.dark-mode .confirm-modal-content .confirm-modal-message {
+  color: #ffffff;
+}
+
+body.dark-mode .confirm-modal-content .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+body.dark-mode .confirm-modal-content .btn-outline-secondary {
+  color: #ffffff;
+  border-color: #6c757d;
+}
+
+body.dark-mode .confirm-modal-content .btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: #ffffff;
+}
+
+@media (max-width: 992px) {
+  .confirm-modal-dialog {
+    max-width: 92vw;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .confirm-modal-content {
+    min-height: auto;
+  }
+
+  .confirm-modal-message {
+    font-size: 1.1rem;
+  }
+}
+
 /* Dark mode form controls in dropdown */
 body.dark-mode .form-check-label {
   color: #ffffff;
