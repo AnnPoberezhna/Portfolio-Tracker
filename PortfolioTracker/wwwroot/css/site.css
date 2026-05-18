@@ -72,6 +72,61 @@ body.dark-mode .btn-primary {
   border-color: #0d6efd;
 }
 
+body.dark-mode .btn-outline-secondary {
+  border-color: #6c757d;
+  color: #ffffff;
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: #fff;
+  border-color: #6c757d;
+}
+
+body.dark-mode .btn-outline-warning {
+  border-color: #ffc107;
+  color: #ffc107;
+}
+
+body.dark-mode .btn-outline-warning:hover {
+  background-color: #ffc107;
+  color: #000;
+  border-color: #ffc107;
+}
+
+body.dark-mode .btn-outline-success {
+  border-color: #28a745;
+  color: #28a745;
+}
+
+body.dark-mode .btn-outline-success:hover {
+  background-color: #28a745;
+  color: #fff;
+  border-color: #28a745;
+}
+
+body.dark-mode .btn-outline-info {
+  border-color: #17a2b8;
+  color: #17a2b8;
+}
+
+body.dark-mode .btn-outline-info:hover {
+  background-color: #17a2b8;
+  color: #fff;
+  border-color: #17a2b8;
+}
+
+body.dark-mode .btn-outline-dark {
+  border-color: #6c757d;
+  color: #ffffff;
+}
+
+body.dark-mode .btn-outline-dark:hover {
+  background-color: #6c757d;
+  color: #fff;
+  border-color: #6c757d;
+}
+
 body.dark-mode .card {
   background-color: #1f1f1f;
   border-color: #333;
@@ -184,6 +239,17 @@ body.dark-mode .dropdown-item {
 
 body.dark-mode .dropdown-item:hover {
   background-color: #333;
+}
+
+/* Dark mode headings - make them white for visibility */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode .display-5 {
+  color: #ffffff !important;
 }
 
 /* Large confirmation modal for admin actions */
