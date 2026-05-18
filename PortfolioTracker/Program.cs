@@ -10,6 +10,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient<CryptoService>();
 builder.Services.AddScoped<PortfolioTracker.Services.CryptoService>();
+builder.Services.AddScoped<PortfolioTracker.Services.ReportService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortfolioTracker.Models;
 using PortfolioTracker.Data;
@@ -13,12 +14,14 @@ public class HomeController : Controller
     private readonly ApplicationDbContext _context;
     private readonly CryptoService _cryptoService;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly ReportService _reportService;
 
-    public HomeController(ApplicationDbContext context, CryptoService cryptoService, UserManager<IdentityUser> userManager)
+    public HomeController(ApplicationDbContext context, CryptoService cryptoService, UserManager<IdentityUser> userManager, ReportService reportService)
     {
         _context = context;
         _cryptoService = cryptoService;
         _userManager = userManager;
+        _reportService = reportService;
     }
 
     public async Task<IActionResult> Index()
@@ -126,6 +129,40 @@ public class HomeController : Controller
         }
 
         return history;
+    }
+
+    [Authorize]
+    public async Task<IActionResult> ExportCsv()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return RedirectToAction(nameof(Index));
+
+        var assets = await _context.Assets
+            .Where(a => a.UserId == user.Id)
+            .ToListAsync();
+
+        var dashboard = await GetDashboardData(user.Id);
+        
+        var csvData = _reportService.GenerateCsvReport(dashboard, assets);
+        return File(csvData, "text/csv", $"portfolio-report-{DateTime.Now:yyyy-MM-dd}.csv");
+    }
+
+    [Authorize]
+    public async Task<IActionResult> ExportPdf()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return RedirectToAction(nameof(Index));
+
+        var assets = await _context.Assets
+            .Where(a => a.UserId == user.Id)
+            .ToListAsync();
+
+        var dashboard = await GetDashboardData(user.Id);
+        
+        var pdfData = _reportService.GeneratePdfReport(dashboard, assets);
+        return File(pdfData, "application/pdf", $"portfolio-report-{DateTime.Now:yyyy-MM-dd}.pdf");
     }
 
     public IActionResult Privacy()
