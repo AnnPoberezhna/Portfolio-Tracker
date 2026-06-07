@@ -5,10 +5,19 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PortfolioTracker.Migrations
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Migracja wprowadzająca strukturę tabel wymaganą przez wbudowany system ASP.NET Core Identity.
+    /// Przygotowuje bazę danych do obsługi procesów rejestracji, logowania oraz zarządzania uprawnieniami.
+    /// </summary>
     public partial class AddIdentity : Migration
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Aplikuje migrację do bazy danych. Tworzy standardowy zestaw tabel powiązanych z tożsamością, 
+        /// włączając w to tabele dla użytkowników (AspNetUsers), ról (AspNetRoles), przypisań ról (AspNetUserRoles), 
+        /// logowań zewnętrznych (AspNetUserLogins), tokenów uwierzytelniających (AspNetUserTokens) 
+        /// oraz roszczeń (AspNetRoleClaims, AspNetUserClaims), a także buduje niezbędne indeksy optymalizacyjne.
+        /// </summary>
+        /// <param name="migrationBuilder">Obiekt dostarczany przez EF Core, służący do definiowania operacji na strukturze bazy danych.</param>
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -194,7 +203,11 @@ namespace PortfolioTracker.Migrations
                 unique: true);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Wycofuje migrację. Trwale usuwa wszystkie tabele utworzone na potrzeby ASP.NET Core Identity, 
+        /// co skutkuje wymazaniem całej infrastruktury uwierzytelniania z bazy danych.
+        /// </summary>
+        /// <param name="migrationBuilder">Obiekt dostarczany przez EF Core, służący do definiowania operacji na strukturze bazy danych.</param>
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

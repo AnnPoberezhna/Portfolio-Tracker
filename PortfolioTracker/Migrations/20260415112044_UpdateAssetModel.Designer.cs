@@ -14,7 +14,13 @@ namespace PortfolioTracker.Migrations
     [Migration("20260415112044_UpdateAssetModel")]
     partial class UpdateAssetModel
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Buduje docelowy model bazy danych dla migracji aktualizującej model aktywów (tzw. snapshot).
+        /// Zapisuje zaktualizowany stan konfiguracji, odzwierciedlający strukturę po usunięciu właściwości "Name" 
+        /// oraz zmianie nazwy z "PurchasePrice" na "CurrentValue" w encji <see cref="PortfolioTracker.Models.Asset"/>, 
+        /// przy jednoczesnym zachowaniu pełnej struktury relacji dla systemu ASP.NET Core Identity.
+        /// </summary>
+        /// <param name="modelBuilder">Obiekt dostarczany przez EF Core, służący do definiowania schematu bazy danych.</param>
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

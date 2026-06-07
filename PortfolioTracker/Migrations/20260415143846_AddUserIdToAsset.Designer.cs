@@ -14,7 +14,12 @@ namespace PortfolioTracker.Migrations
     [Migration("20260415143846_AddUserIdToAsset")]
     partial class AddUserIdToAsset
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Buduje docelowy model bazy danych dla migracji dodającej powiązanie aktywów z użytkownikiem (tzw. snapshot).
+        /// Zapisuje zaktualizowany stan konfiguracji, odzwierciedlający strukturę po dodaniu kolumny "UserId" 
+        /// oraz relacji klucza obcego łączącej encję <see cref="PortfolioTracker.Models.Asset"/> z tabelą użytkowników systemu.
+        /// </summary>
+        /// <param name="modelBuilder">Obiekt dostarczany przez EF Core, służący do definiowania schematu bazy danych.</param>
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

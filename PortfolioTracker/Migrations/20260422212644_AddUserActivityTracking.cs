@@ -5,10 +5,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PortfolioTracker.Migrations
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Migracja wprowadzająca funkcjonalność śledzenia aktywności użytkowników.
+    /// Tworzy nową tabelę przeznaczoną do przechowywania metadanych konta, takich jak data rejestracji i czas ostatniej aktywności.
+    /// </summary>
     public partial class AddUserActivityTracking : Migration
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Aplikuje migrację do bazy danych.
+        /// Tworzy tabelę "UserActivities" z kolumnami "RegisteredAtUtc" oraz "LastSeenUtc". 
+        /// Ustanawia "UserId" jako klucz główny, będący jednocześnie kluczem obcym powiązanym kaskadowo z tabelą "AspNetUsers".
+        /// </summary>
+        /// <param name="migrationBuilder">Obiekt dostarczany przez EF Core, służący do definiowania operacji na strukturze bazy danych.</param>
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -31,7 +39,11 @@ namespace PortfolioTracker.Migrations
                 });
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Wycofuje migrację (odwraca zmiany dokonane w metodzie Up).
+        /// Trwale usuwa tabelę "UserActivities" oraz jej powiązania z bazy danych.
+        /// </summary>
+        /// <param name="migrationBuilder">Obiekt dostarczany przez EF Core, służący do definiowania operacji na strukturze bazy danych.</param>
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

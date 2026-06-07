@@ -14,7 +14,13 @@ namespace PortfolioTracker.Migrations
     [Migration("20260422212644_AddUserActivityTracking")]
     partial class AddUserActivityTracking
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Buduje docelowy model bazy danych (tzw. snapshot) dla migracji dodającej śledzenie aktywności użytkowników.
+        /// Zapisuje stan konfiguracji uwzględniający nową encję <see cref="PortfolioTracker.Models.UserActivity"/>,
+        /// jej kolumny czasowe (RegisteredAtUtc, LastSeenUtc) oraz poprawnie zdefiniowaną relację jeden-do-jednego 
+        /// z tabelą "AspNetUsers".
+        /// </summary>
+        /// <param name="modelBuilder">Obiekt dostarczany przez EF Core, służący do definiowania schematu bazy danych.</param>
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

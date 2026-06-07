@@ -5,10 +5,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PortfolioTracker.Migrations
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Inicjalna migracja tworząca początkową strukturę bazy danych dla aplikacji PortfolioTracker.
+    /// Odpowiada za wygenerowanie głównej tabeli przechowującej aktywa użytkownika.
+    /// </summary>
     public partial class InitialCreate : Migration
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Aplikuje migrację do bazy danych. 
+        /// Tworzy tabelę "Assets" zawierającą podstawowe informacje o aktywach: identyfikator, nazwę, symbol, 
+        /// posiadaną ilość, cenę zakupu oraz datę transakcji.
+        /// </summary>
+        /// <param name="migrationBuilder">Obiekt dostarczany przez EF Core, służący do definiowania operacji na strukturze bazy danych.</param>
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -29,7 +37,11 @@ namespace PortfolioTracker.Migrations
                 });
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Wycofuje migrację (odwraca zmiany dokonane w metodzie Up).
+        /// Całkowicie usuwa tabelę "Assets" ze schematu bazy danych.
+        /// </summary>
+        /// <param name="migrationBuilder">Obiekt dostarczany przez EF Core, służący do definiowania operacji na strukturze bazy danych.</param>
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

@@ -14,7 +14,12 @@ namespace PortfolioTracker.Migrations
     [Migration("20260322203902_InitialCreate")]
     partial class InitialCreate
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Buduje docelowy model bazy danych dla inicjalnej migracji (tzw. snapshot).
+        /// Zapisuje początkowy stan konfiguracji, definiując jak encja <see cref="PortfolioTracker.Models.Asset"/> 
+        /// ma być mapowana na tabele, kolumny (m.in. Name, Symbol, Quantity, PurchasePrice) i typy danych w silniku bazy danych.
+        /// </summary>
+        /// <param name="modelBuilder">Obiekt dostarczany przez EF Core, służący do definiowania schematu bazy danych.</param>
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

@@ -4,10 +4,17 @@
 
 namespace PortfolioTracker.Migrations
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Migracja aktualizująca model danych dla aktywów (Assets).
+    /// Odpowiada za usunięcie zbędnej kolumny z nazwą oraz zmianę przeznaczenia kolumny z ceną.
+    /// </summary>
     public partial class UpdateAssetModel : Migration
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Aplikuje migrację do bazy danych. 
+        /// Trwale usuwa kolumnę "Name" z tabeli "Assets" oraz zmienia nazwę kolumny z "PurchasePrice" na "CurrentValue".
+        /// </summary>
+        /// <param name="migrationBuilder">Obiekt dostarczany przez EF Core, służący do definiowania operacji na strukturze bazy danych.</param>
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
@@ -20,7 +27,11 @@ namespace PortfolioTracker.Migrations
                 newName: "CurrentValue");
         }
 
-        /// <inheritdoc />
+        /// <summary>
+            /// Wycofuje migrację (odwraca zmiany dokonane w metodzie Up).
+            /// Odtwarza kolumnę "Name" o maksymalnej długości 50 znaków i przywraca pierwotną nazwę kolumny "PurchasePrice".
+            /// </summary>
+            /// <param name="migrationBuilder">Obiekt dostarczany przez EF Core, służący do definiowania operacji na strukturze bazy danych.</param>
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(

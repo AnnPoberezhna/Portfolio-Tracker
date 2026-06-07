@@ -14,7 +14,13 @@ namespace PortfolioTracker.Migrations
     [Migration("20260412133932_AddIdentity")]
     partial class AddIdentity
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Buduje docelowy model bazy danych (tzw. snapshot) dla migracji integrującej system Identity.
+        /// Zapisuje stan konfiguracji uwzględniający standardowe encje uwierzytelniania i autoryzacji z przestrzeni
+        /// nazw Microsoft.AspNetCore.Identity (m.in. IdentityUser, IdentityRole, relacje, claims i tokeny) 
+        /// oraz zachowuje dotychczasową strukturę encji <see cref="PortfolioTracker.Models.Asset"/>.
+        /// </summary>
+        /// <param name="modelBuilder">Obiekt dostarczany przez EF Core, służący do definiowania schematu bazy danych.</param>
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

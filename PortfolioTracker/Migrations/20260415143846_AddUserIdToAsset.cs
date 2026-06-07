@@ -4,10 +4,19 @@
 
 namespace PortfolioTracker.Migrations
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Migracja wprowadzająca relację między aktywami a użytkownikami systemu.
+    /// Odpowiada za dodanie klucza obcego (UserId) do tabeli aktywów, co pozwala na przypisanie 
+    /// konkretnego aktywa do konkretnego właściciela (konta użytkownika).
+    /// </summary>
     public partial class AddUserIdToAsset : Migration
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Aplikuje migrację do bazy danych. 
+        /// Dodaje wymaganą kolumnę "UserId" do tabeli "Assets", zakłada na niej indeks optymalizujący wyszukiwanie 
+        /// oraz tworzy relację klucza obcego do tabeli "AspNetUsers" (z włączonym usuwaniem kaskadowym).
+        /// </summary>
+        /// <param name="migrationBuilder">Obiekt dostarczany przez EF Core, służący do definiowania operacji na strukturze bazy danych.</param>
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
@@ -31,7 +40,12 @@ namespace PortfolioTracker.Migrations
                 onDelete: ReferentialAction.Cascade);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Wycofuje migrację (odwraca zmiany dokonane w metodzie Up).
+        /// Usuwa relację klucza obcego, usuwa indeks "IX_Assets_UserId", a ostatecznie kasuje 
+        /// całą kolumnę "UserId" z tabeli "Assets", zrywając powiązanie aktywów z użytkownikami.
+        /// </summary>
+        /// <param name="migrationBuilder">Obiekt dostarczany przez EF Core, służący do definiowania operacji na strukturze bazy danych.</param>
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
